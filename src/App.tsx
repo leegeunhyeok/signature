@@ -12,13 +12,9 @@ function App() {
   const [isAnimationEnd, setEndState] = useState(false);
   const [progress, setProgress] = useState(0);
   const controller = useAnimate(
-    (p) => {
-      setProgress(p);
-    },
+    (p) => setProgress(p),
     2000,
-    () => {
-      setEndState(true);
-    },
+    () => setTimeout(() => setEndState(true), 300),
   );
 
   useEffect(() => {
@@ -37,6 +33,7 @@ function App() {
         <SVGLine progress={progress * 100} color="#282c34" d={d} />
       </SignBox>
       <SignTitle show={isAnimationEnd}>My Own Signature</SignTitle>
+      <FixedMenu></FixedMenu>
     </AppContainer>
   );
 }
@@ -74,4 +71,14 @@ const SignTitle = styled.p<FadeComponent>`
   font-size: 1.8rem;
   transition: opacity 300ms;
   opacity: ${(props) => (props.show ? '1' : '0')};
+`;
+
+const FixedMenu = styled.div`
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 1rem;
+  text-align: center;
+  box-sizing: border-box;
 `;
