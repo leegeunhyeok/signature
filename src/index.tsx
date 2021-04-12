@@ -20,7 +20,6 @@ const GlobalStyle = createGlobalStyle`
 
   p {
     font-family: 'Allura', cursive;
-    font-size: 1.6rem;
   }
 
   code {

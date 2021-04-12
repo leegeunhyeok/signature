@@ -12,14 +12,19 @@ function SVGLine({ progress, color, d }: SVGLineProps) {
   const boxRef = useRef<SVGSVGElement>(null);
   const lineRef = useRef<SVGPathElement>(null);
   const [length, setLength] = useState(0);
-  const [pathScale, setScale] = useState(1);
+  const [scale, setScale] = useState(1);
 
-  // Fit line path to SVG container
   const updateSizing = useCallback(() => {
-    if (!lineRef.current || !boxRef.current) return;
-    const boxWidth = boxRef.current.getBoundingClientRect().width;
-    const lineWidth = lineRef.current.getBBox().width;
-    setScale(boxWidth / lineWidth);
+    if (!boxRef.current) return;
+    const bbox = boxRef.current.getBBox();
+    // Update the width and height using the size of the contents
+    boxRef.current.setAttribute('width', (bbox.x + bbox.width + bbox.x).toString());
+    boxRef.current.setAttribute('height', (bbox.y + bbox.height + bbox.y).toString());
+
+    const targetWidth = document.body.offsetWidth * 0.5;
+    const targetHeight = document.body.offsetHeight * 0.3;
+
+    setScale(Math.max(1, Math.min(targetWidth / bbox.width, targetHeight / bbox.height)));
   }, []);
 
   useEffect(() => {
@@ -34,8 +39,8 @@ function SVGLine({ progress, color, d }: SVGLineProps) {
   }, [updateSizing]);
 
   return (
-    <SVGContainer ref={boxRef}>
-      <ScaleablePath
+    <ScaleableSVG ref={boxRef} scale={scale}>
+      <path
         fill="none"
         strokeWidth="1"
         strokeMiterlimit="0"
@@ -43,22 +48,17 @@ function SVGLine({ progress, color, d }: SVGLineProps) {
         strokeDasharray={`${length} ${length}`}
         strokeDashoffset={(length - length * (progress / 100)).toString()}
         stroke={color}
-        scale={pathScale}
         d={d}
         ref={lineRef}
       />
-    </SVGContainer>
+    </ScaleableSVG>
   );
 }
 
 export default SVGLine;
 
-const SVGContainer = styled.svg`
-  width: 100%;
-  height: 30vh;
-`;
-
-const ScaleablePath = styled.path<{ scale: number }>`
-  ${(props) => `transform: scale(${props.scale})`};
+const ScaleableSVG = styled.svg<{ scale: number }>`
+  transform: scale(${(props) => props.scale});
+  max-width: 100%;
   transition: transform 300ms;
 `;
