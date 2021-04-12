@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import styled from 'styled-components';
+import { debounce } from '../utils';
 
 interface SVGLineProps {
   progress: number;
@@ -25,10 +26,11 @@ function SVGLine({ progress, color, d }: SVGLineProps) {
     if (!lineRef.current) return;
     // Get SVG path's length
     setLength(lineRef.current.getTotalLength() || 0);
-    window.addEventListener('resize', updateSizing);
+    const helper = debounce(() => updateSizing(), 500);
+    window.addEventListener('resize', helper.handler);
     updateSizing();
 
-    return () => window.removeEventListener('resize', updateSizing);
+    return () => window.removeEventListener('resize', helper.handler);
   }, [updateSizing]);
 
   return (
