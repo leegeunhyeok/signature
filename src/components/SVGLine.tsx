@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import styled from 'styled-components';
 
 interface SVGLineProps {
@@ -8,33 +8,55 @@ interface SVGLineProps {
 }
 
 function SVGLine({ progress, color, d }: SVGLineProps) {
-  const ref = useRef<SVGPathElement>(null);
+  const boxRef = useRef<SVGSVGElement>(null);
+  const lineRef = useRef<SVGPathElement>(null);
   const [length, setLength] = useState(0);
+  const [pathScale, setScale] = useState(1);
 
-  useEffect(() => {
-    // Get SVG path's length
-    setLength(ref.current?.getTotalLength() || 0);
+  // Fit line path to SVG container
+  const updateSizing = useCallback(() => {
+    if (!lineRef.current || !boxRef.current) return;
+    const boxWidth = boxRef.current.getBoundingClientRect().width;
+    const lineWidth = lineRef.current.getBBox().width;
+    setScale(boxWidth / lineWidth);
   }, []);
 
+  useEffect(() => {
+    if (!lineRef.current) return;
+    // Get SVG path's length
+    setLength(lineRef.current.getTotalLength() || 0);
+    window.addEventListener('resize', updateSizing);
+    updateSizing();
+
+    return () => window.removeEventListener('resize', updateSizing);
+  }, [updateSizing]);
+
   return (
-    <ScaleableSVG width={160} height={62}>
-      <path
+    <SVGContainer ref={boxRef}>
+      <ScaleablePath
         fill="none"
         strokeWidth="1"
         strokeMiterlimit="0"
         strokeLinecap="round"
         strokeDasharray={`${length} ${length}`}
         strokeDashoffset={(length - length * (progress / 100)).toString()}
-        ref={ref}
         stroke={color}
+        scale={pathScale}
         d={d}
+        ref={lineRef}
       />
-    </ScaleableSVG>
+    </SVGContainer>
   );
 }
 
 export default SVGLine;
 
-const ScaleableSVG = styled.svg`
+const SVGContainer = styled.svg`
   width: 100%;
+  height: 30vh;
+`;
+
+const ScaleablePath = styled.path<{ scale: number }>`
+  ${(props) => `transform: scale(${props.scale})`};
+  transition: transform 300ms;
 `;

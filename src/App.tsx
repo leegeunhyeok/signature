@@ -20,8 +20,8 @@ function App() {
 
   return (
     <AppContainer ready={isReady}>
-      <AppHeader>{progress}</AppHeader>
       <SVGLine progress={progress * 100} color="#282c34" d={d} />
+      <AppHeader>{progress}</AppHeader>
       <button onClick={controller.current.start}>Start</button>
       <button onClick={controller.current.stop}>Stop</button>
     </AppContainer>
