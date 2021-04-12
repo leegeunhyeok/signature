@@ -5,6 +5,10 @@ import reportWebVitals from './reportWebVitals';
 import { createGlobalStyle } from 'styled-components';
 
 const GlobalStyle = createGlobalStyle`
+  html, body, #root {
+    height: 100%;
+  }
+
   body {
     margin: 0;
     background-color: #282c34;
@@ -12,6 +16,11 @@ const GlobalStyle = createGlobalStyle`
       'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+  }
+
+  p {
+    font-family: 'Allura', cursive;
+    font-size: 1.6rem;
   }
 
   code {
