@@ -1,6 +1,10 @@
 import { useRef } from 'react';
 
-export const useAnimate = (callback: (progress: number) => void, ms: number) => {
+export const useAnimate = (
+  callback: (progress: number) => void,
+  ms: number,
+  endCallback?: () => void,
+) => {
   const state = {
     startedAt: 0,
     interval: -1,
@@ -24,7 +28,7 @@ export const useAnimate = (callback: (progress: number) => void, ms: number) => 
         state.exited || frame();
       });
     } else {
-      state.startedAt = 0;
+      stop();
       callback(progress());
     }
   };
@@ -40,6 +44,7 @@ export const useAnimate = (callback: (progress: number) => void, ms: number) => 
     state.exited = true;
     state.startedAt = 0;
     cancelAnimationFrame(state.interval);
+    endCallback && endCallback();
   };
 
   return useRef({ start, stop });
