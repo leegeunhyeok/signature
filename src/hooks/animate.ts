@@ -7,8 +7,13 @@ export const useAnimate = (callback: (progress: number) => void, ms: number) => 
     exited: false,
   };
 
+  // Timing function
+  const timing = (x: number) => {
+    return x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+  };
+
   // Get animation progress
-  const progress = () => Math.min((+new Date() - state.startedAt) / ms, 1);
+  const progress = () => timing(Math.min((+new Date() - state.startedAt) / ms, 1));
 
   // Loop for animation ticks
   const frame = () => {
