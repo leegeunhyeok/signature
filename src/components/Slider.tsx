@@ -57,6 +57,7 @@ const SliderBar = styled.div<SliderValue>`
   width: ${(props) => props.value}%;
   height: 100%;
   background-color: #282c34;
+  border-radius: ${LINE_SIZE}px 0 0 ${LINE_SIZE}px;
   pointer-events: none;
 `;
 
