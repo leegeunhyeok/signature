@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import SVGLine from './components/SVGLine';
+import Slider from './components/Slider';
 import { useAnimate } from './hooks/animate';
 
 // Sample path
@@ -12,7 +13,7 @@ function App() {
   const [isAnimationEnd, setEndState] = useState(false);
   const [progress, setProgress] = useState(0);
   const controller = useAnimate(
-    (p) => setProgress(p),
+    (p) => setProgress(p * 100),
     2000,
     () => setTimeout(() => setEndState(true), 300),
   );
@@ -27,13 +28,22 @@ function App() {
     }, 500);
   }, [controller]);
 
+  const onProgressChange = (value: number) => {
+    controller.current.stop();
+    setProgress(value);
+  };
+
   return (
     <AppContainer ready={isReady}>
       <SignBox>
-        <SVGLine progress={progress * 100} color="#282c34" d={d} />
+        <SVGLine progress={progress} color="#282c34" d={d} />
       </SignBox>
       <SignTitle show={isAnimationEnd}>My Own Signature</SignTitle>
-      <FixedMenu></FixedMenu>
+      {isReady && (
+        <FixedMenu>
+          <Slider onChange={onProgressChange} value={progress} />
+        </FixedMenu>
+      )}
     </AppContainer>
   );
 }
