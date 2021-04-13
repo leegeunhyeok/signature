@@ -28,6 +28,11 @@ function App() {
     }, 500);
   }, [controller]);
 
+  const resetAnimation = () => {
+    controller.current.stop();
+    controller.current.start();
+  };
+
   const onProgressChange = (value: number) => {
     controller.current.stop();
     setProgress(value);
@@ -35,7 +40,7 @@ function App() {
 
   return (
     <AppContainer ready={isReady}>
-      <SignBox>
+      <SignBox onClick={resetAnimation}>
         <SVGLine progress={progress} color="#282c34" d={d} />
       </SignBox>
       <SignTitle show={isAnimationEnd}>My Own Signature</SignTitle>
@@ -75,6 +80,7 @@ const AppContainer = styled.div<AppContainerProps>`
 const SignBox = styled.div`
   width: 100%;
   height: 20vh;
+  cursor: pointer;
 `;
 
 const SignTitle = styled.p<FadeComponent>`
