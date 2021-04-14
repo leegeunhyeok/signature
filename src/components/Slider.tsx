@@ -3,13 +3,14 @@ import styled from 'styled-components';
 
 interface SliderProps {
   value: number;
+  min?: number;
   onChange(value: number): void;
 }
 
 const LINE_SIZE = 10;
 const THUMB_SIZE = 20;
 
-function Slider({ value, onChange }: SliderProps) {
+function Slider({ value, min, onChange }: SliderProps) {
   const ref = useRef<HTMLDivElement>(null);
   const [holding, setHoldState] = useState(false);
 
@@ -17,7 +18,7 @@ function Slider({ value, onChange }: SliderProps) {
     if (!ref.current || !holding) return;
     const clientX = 'touches' in event ? event.touches[0].clientX : event.clientX;
     const newValue = ((clientX - THUMB_SIZE) / ref.current.clientWidth) * 100;
-    onChange(newValue);
+    onChange(Math.max(min ?? 0, newValue));
   };
 
   return (
