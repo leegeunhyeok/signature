@@ -46,7 +46,7 @@ function App() {
       <SignTitle show={isAnimationEnd}>My Own Signature</SignTitle>
       {isReady && (
         <FixedMenu>
-          <Slider onChange={onProgressChange} value={progress} min={0}/>
+          <Slider onChange={onProgressChange} value={progress} min={0} max={100}/>
         </FixedMenu>
       )}
     </AppContainer>
